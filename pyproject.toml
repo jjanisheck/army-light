@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "army-light"
+version = "0.2.0"
+description = "Control a BTS ARMY Bomb lightstick from the macOS menu bar over Bluetooth LE."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Joey Janisheck" }]
+keywords = ["bts", "army-bomb", "lightstick", "bluetooth", "ble", "menu-bar", "macos"]
+classifiers = [
+    "Environment :: MacOS X",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+dependencies = [
+    "rumps>=0.4.0",
+    "bleak>=0.21.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.5"]
+# py2app still imports pkg_resources, removed in setuptools 81 — pin below it.
+build = ["py2app>=0.28", "setuptools>=68,<81"]
+
+[project.scripts]
+army-light = "army_light.cli:main"
+
+[project.urls]
+# TODO: update once published
+Homepage = "https://github.com/USERNAME/army-light"
+Repository = "https://github.com/USERNAME/army-light"
+
+[tool.setuptools]
+packages = ["army_light"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

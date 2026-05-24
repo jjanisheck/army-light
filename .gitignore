@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# App / local state
+*.log
+
+# Internal planning (not published)
+tasks/
+
+# claude-flow / ruflo plugin local state
+agentdb.rvf
+agentdb.rvf.lock
