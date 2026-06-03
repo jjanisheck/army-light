@@ -73,6 +73,30 @@ confirming/extending support — are in **[docs/PROTOCOL.md](docs/PROTOCOL.md)**
 > fallback. If a color doesn't take on your unit, the built-in `army-light
 > probe` tool finds the right values — see the protocol doc.
 
+## Stream Deck / Shortcuts / automation
+
+While the app is running it serves a **localhost-only remote control** on
+`http://127.0.0.1:8722` (configurable via `control_port` in the config file;
+`0` disables it):
+
+```
+/color/red            /color/army-purple        /color/00ff7f    /color/255,0,0
+/effect/glow-cycle    /effect/blink?color=blue  /effect/duo-fade?color=red&color2=blue
+/brightness/40        /stop                     /off             /reconnect    /status
+```
+
+**Stream Deck (easiest — built-in, verified):** drag the **System → Website**
+action onto a key, paste a control URL (e.g.
+`http://127.0.0.1:8722/effect/rainbow`), and tick **"GET request in
+background"** — the button fires silently without opening a browser. One key
+per color/effect (Red, Glow Cycle, Off, …). Works perfectly.
+
+**Alternatives:** an Apple **Shortcut** with a "Get Contents of URL" action
+assigned via Stream Deck's Shortcuts action, or plugins like *Web Requests* —
+all pointing at the same URLs.
+
+From a terminal it's just `curl http://127.0.0.1:8722/color/red`.
+
 ## Run from source (developers)
 
 ```bash

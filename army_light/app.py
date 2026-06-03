@@ -40,6 +40,7 @@ from . import APP_NAME, config
 from .controller import WandController
 from .effects import EFFECTS
 from .palette import PALETTE
+from .server import ControlServer
 from .swatches import swatch_path
 
 log = logging.getLogger(__name__)
@@ -87,6 +88,13 @@ class PanelApp(NSObject):
         self._swatch_buttons = []
         self._build_status_item()
         self._build_panel()
+        self._server = None
+        if settings.control_port:
+            try:
+                self._server = ControlServer(self.controller, settings.control_port)
+                self._server.start()
+            except OSError as e:
+                log.error("Control server failed to start: %s", e)
         self._timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
             2.0, self, "refresh:", None, True
         )
@@ -269,6 +277,8 @@ class PanelApp(NSObject):
 
     def quitClicked_(self, _sender):  # noqa: N802
         log.info("Quitting.")
+        if self._server:
+            self._server.stop()
         self.controller.shutdown()
         NSApplication.sharedApplication().terminate_(None)
 

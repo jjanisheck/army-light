@@ -81,6 +81,10 @@ class Settings:
     connect_timeout: float = 12.0
     idle_color: list[int] = field(default_factory=lambda: [0, 0, 0])  # "off"
 
+    # Localhost HTTP remote control (Stream Deck / Shortcuts / curl).
+    # 127.0.0.1 only; set to 0 to disable.
+    control_port: int = 8722
+
     @classmethod
     def load(cls) -> Settings:
         path = config_path()
