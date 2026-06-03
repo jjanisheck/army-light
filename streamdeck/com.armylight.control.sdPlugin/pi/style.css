@@ -1,0 +1,14 @@
+/* Minimal Stream Deck property-inspector look. */
+body {
+  background: #2d2d2d; color: #d8d8d8; margin: 8px;
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 13px;
+}
+.row { display: flex; align-items: center; margin: 8px 0; }
+.row label { width: 90px; color: #969696; flex-shrink: 0; }
+select, input[type="number"], input[type="text"] {
+  flex: 1; background: #3d3d3d; color: #d8d8d8; border: 1px solid #555;
+  border-radius: 4px; padding: 5px 6px; font-size: 13px;
+}
+input[type="color"] { width: 48px; height: 28px; border: none; background: none; padding: 0; }
+input[type="checkbox"] { margin-right: 6px; }
+.hint { color: #7a7a7a; font-size: 11px; margin-top: 10px; line-height: 1.4; }

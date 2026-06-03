@@ -1,0 +1,495 @@
+{
+  "SDKVersion": 2,
+  "CodePath": "index.html",
+  "Name": "ARMY Light",
+  "Author": "army-light",
+  "Version": "1.1.0",
+  "Description": "Control a BTS ARMY Bomb Ver. 4 through the ARMY Light macOS app: every color, effect, and brightness preset as a ready-made key. Requires the ARMY Light app running (localhost remote on port 8722).",
+  "URL": "https://github.com/jjanisheck/army-light",
+  "Icon": "images/plugin",
+  "Category": "ARMY Light",
+  "CategoryIcon": "images/category",
+  "Software": {
+    "MinimumVersion": "6.0"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "12"
+    }
+  ],
+  "Actions": [
+    {
+      "UUID": "com.armylight.preset.color.red",
+      "Name": "Red",
+      "Tooltip": "Set the wand to Red.",
+      "Icon": "images/p-red",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.orange",
+      "Name": "Orange",
+      "Tooltip": "Set the wand to Orange.",
+      "Icon": "images/p-orange",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.amber",
+      "Name": "Amber",
+      "Tooltip": "Set the wand to Amber.",
+      "Icon": "images/p-amber",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.yellow",
+      "Name": "Yellow",
+      "Tooltip": "Set the wand to Yellow.",
+      "Icon": "images/p-yellow",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.lime",
+      "Name": "Lime",
+      "Tooltip": "Set the wand to Lime.",
+      "Icon": "images/p-lime",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.green",
+      "Name": "Green",
+      "Tooltip": "Set the wand to Green.",
+      "Icon": "images/p-green",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.mint",
+      "Name": "Mint",
+      "Tooltip": "Set the wand to Mint.",
+      "Icon": "images/p-mint",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.cyan",
+      "Name": "Cyan",
+      "Tooltip": "Set the wand to Cyan.",
+      "Icon": "images/p-cyan",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.sky",
+      "Name": "Sky",
+      "Tooltip": "Set the wand to Sky.",
+      "Icon": "images/p-sky",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.blue",
+      "Name": "Blue",
+      "Tooltip": "Set the wand to Blue.",
+      "Icon": "images/p-blue",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.army-purple",
+      "Name": "ARMY Purple",
+      "Tooltip": "Set the wand to ARMY Purple.",
+      "Icon": "images/p-army-purple",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.purple",
+      "Name": "Purple",
+      "Tooltip": "Set the wand to Purple.",
+      "Icon": "images/p-purple",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.magenta",
+      "Name": "Magenta",
+      "Tooltip": "Set the wand to Magenta.",
+      "Icon": "images/p-magenta",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.pink",
+      "Name": "Pink",
+      "Tooltip": "Set the wand to Pink.",
+      "Icon": "images/p-pink",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.rose",
+      "Name": "Rose",
+      "Tooltip": "Set the wand to Rose.",
+      "Icon": "images/p-rose",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.color.white",
+      "Name": "White",
+      "Tooltip": "Set the wand to White.",
+      "Icon": "images/p-white",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.blink",
+      "Name": "Blink",
+      "Tooltip": "Start the Blink effect.",
+      "Icon": "images/fx-blink",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.breath",
+      "Name": "Breath",
+      "Tooltip": "Start the Breath effect.",
+      "Icon": "images/fx-breath",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.strobe",
+      "Name": "Strobe",
+      "Tooltip": "Start the Strobe effect.",
+      "Icon": "images/fx-strobe",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.duo-fade",
+      "Name": "Duo Fade",
+      "Tooltip": "Start the Duo Fade effect.",
+      "Icon": "images/fx-duo-fade",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.color-cycle",
+      "Name": "Color Cycle",
+      "Tooltip": "Start the Color Cycle effect.",
+      "Icon": "images/fx-color-cycle",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.rainbow",
+      "Name": "Rainbow",
+      "Tooltip": "Start the Rainbow effect.",
+      "Icon": "images/fx-rainbow",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.glow-cycle",
+      "Name": "Glow Cycle",
+      "Tooltip": "Start the Glow Cycle effect.",
+      "Icon": "images/fx-glow-cycle",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.candle",
+      "Name": "Candle",
+      "Tooltip": "Start the Candle effect.",
+      "Icon": "images/fx-candle",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.party",
+      "Name": "Party",
+      "Tooltip": "Start the Party effect.",
+      "Icon": "images/fx-party",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.jungle",
+      "Name": "Jungle",
+      "Tooltip": "Start the Jungle effect.",
+      "Icon": "images/fx-jungle",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.fx.ice",
+      "Name": "Ice",
+      "Tooltip": "Start the Ice effect.",
+      "Icon": "images/fx-ice",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.bright.10",
+      "Name": "Brightness 10%",
+      "Tooltip": "Set brightness to 10%.",
+      "Icon": "images/b-10",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.bright.25",
+      "Name": "Brightness 25%",
+      "Tooltip": "Set brightness to 25%.",
+      "Icon": "images/b-25",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.bright.50",
+      "Name": "Brightness 50%",
+      "Tooltip": "Set brightness to 50%.",
+      "Icon": "images/b-50",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.bright.75",
+      "Name": "Brightness 75%",
+      "Tooltip": "Set brightness to 75%.",
+      "Icon": "images/b-75",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.bright.100",
+      "Name": "Brightness 100%",
+      "Tooltip": "Set brightness to 100%.",
+      "Icon": "images/b-100",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.cmd.off",
+      "Name": "Off",
+      "Tooltip": "Off.",
+      "Icon": "images/c-off",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.cmd.stop",
+      "Name": "Stop Effect",
+      "Tooltip": "Stop Effect.",
+      "Icon": "images/c-stop",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.preset.cmd.reconnect",
+      "Name": "Reconnect",
+      "Tooltip": "Reconnect.",
+      "Icon": "images/c-reconnect",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ]
+    },
+    {
+      "UUID": "com.armylight.color",
+      "Name": "Custom Color",
+      "Tooltip": "Any color \u2014 palette dropdown or full color picker.",
+      "Icon": "images/color",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ],
+      "PropertyInspectorPath": "pi/color.html"
+    },
+    {
+      "UUID": "com.armylight.effect",
+      "Name": "Custom Effect",
+      "Tooltip": "Any effect, with per-effect color pickers.",
+      "Icon": "images/effect",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ],
+      "PropertyInspectorPath": "pi/effect.html"
+    },
+    {
+      "UUID": "com.armylight.brightness",
+      "Name": "Custom Brightness",
+      "Tooltip": "Any brightness percent.",
+      "Icon": "images/brightness",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ],
+      "PropertyInspectorPath": "pi/brightness.html"
+    },
+    {
+      "UUID": "com.armylight.command",
+      "Name": "Custom Command",
+      "Tooltip": "Off, Stop Effect, or Reconnect.",
+      "Icon": "images/command",
+      "SupportedInMultiActions": true,
+      "States": [
+        {
+          "Image": "images/key"
+        }
+      ],
+      "PropertyInspectorPath": "pi/command.html"
+    }
+  ]
+}

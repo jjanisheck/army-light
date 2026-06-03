@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="row"><label>Color</label>
+  <select id="mode" onchange="modeChanged()">
+    <option value="palette">Palette</option>
+    <option value="custom">Custom</option>
+  </select>
+</div>
+<div class="row" id="paletteRow"><label>Palette</label>
+  <select id="paletteColor" onchange="saveForm()"></select>
+</div>
+<div class="row" id="customRow" style="display:none"><label>Pick</label>
+  <input type="color" id="customColor" value="#823cff" onchange="saveForm()">
+</div>
+<div class="row"><label>Show name</label>
+  <input type="checkbox" id="showName" checked onchange="saveForm()">
+</div>
+<div class="hint">Sets the wand to this solid color. The key shows the color.
+Requires the ARMY Light app to be running.</div>
+
+<script src="pi.js"></script>
+<script>
+const PALETTE_NAMES = ["Red","Orange","Amber","Yellow","Lime","Green","Mint",
+  "Cyan","Sky","Blue","ARMY Purple","Purple","Magenta","Pink","Rose","White"];
+const sel = document.getElementById("paletteColor");
+PALETTE_NAMES.forEach(n => { const o = document.createElement("option"); o.textContent = n; sel.appendChild(o); });
+
+function modeChanged() {
+  const custom = document.getElementById("mode").value === "custom";
+  document.getElementById("paletteRow").style.display = custom ? "none" : "flex";
+  document.getElementById("customRow").style.display = custom ? "flex" : "none";
+  saveForm();
+}
+function loadForm(s) {
+  document.getElementById("mode").value = s.colorMode || "palette";
+  sel.value = s.paletteColor || "ARMY Purple";
+  document.getElementById("customColor").value = s.customColor || "#823cff";
+  document.getElementById("showName").checked = s.showName !== false;
+  modeChanged();
+}
+function readForm() {
+  return {
+    colorMode: document.getElementById("mode").value,
+    paletteColor: sel.value,
+    customColor: document.getElementById("customColor").value,
+    showName: document.getElementById("showName").checked,
+  };
+}
+</script>
+</body>
+</html>

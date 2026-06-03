@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="row"><label>Effect</label>
+  <select id="effect" onchange="effectChanged()"></select>
+</div>
+<div class="row" id="c1Row" style="display:none"><label>Color</label>
+  <input type="color" id="color1" value="#823cff" onchange="saveForm()">
+</div>
+<div class="row" id="c2Row" style="display:none"><label>Color 2</label>
+  <input type="color" id="color2" value="#ff2896" onchange="saveForm()">
+</div>
+<div class="hint">Starts the effect on the wand. Blink/Breath/Strobe take one
+color; Duo Fade gradients between two. The themed key icon previews it.</div>
+
+<script src="pi.js"></script>
+<script>
+const EFFECTS = {"Blink":1,"Breath":1,"Strobe":1,"Duo Fade":2,"Color Cycle":0,
+  "Rainbow":0,"Glow Cycle":0,"Candle":0,"Party":0,"Jungle":0,"Ice":0};
+const sel = document.getElementById("effect");
+Object.keys(EFFECTS).forEach(n => { const o = document.createElement("option"); o.textContent = n; sel.appendChild(o); });
+
+function effectChanged() {
+  const arity = EFFECTS[sel.value] || 0;
+  document.getElementById("c1Row").style.display = arity >= 1 ? "flex" : "none";
+  document.getElementById("c2Row").style.display = arity === 2 ? "flex" : "none";
+  saveForm();
+}
+function loadForm(s) {
+  sel.value = s.effect || "Rainbow";
+  document.getElementById("color1").value = s.color1 || "#823cff";
+  document.getElementById("color2").value = s.color2 || "#ff2896";
+  effectChanged();
+}
+function readForm() {
+  return {
+    effect: sel.value,
+    color1: document.getElementById("color1").value,
+    color2: document.getElementById("color2").value,
+  };
+}
+</script>
+</body>
+</html>

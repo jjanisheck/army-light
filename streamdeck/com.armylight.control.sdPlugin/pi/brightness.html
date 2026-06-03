@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="row"><label>Percent</label>
+  <input type="number" id="percent" min="5" max="100" step="5" value="100" onchange="saveForm()">
+</div>
+<div class="hint">Sets the wand's brightness (software scaling). Make a few keys
+— e.g. 30 / 60 / 100 — for instant levels.</div>
+
+<script src="pi.js"></script>
+<script>
+function loadForm(s) {
+  document.getElementById("percent").value = s.percent != null ? s.percent : 100;
+}
+function readForm() {
+  return { percent: Number(document.getElementById("percent").value) };
+}
+</script>
+</body>
+</html>

@@ -95,6 +95,27 @@ per color/effect (Red, Glow Cycle, Off, …). Works perfectly.
 assigned via Stream Deck's Shortcuts action, or plugins like *Web Requests* —
 all pointing at the same URLs.
 
+**Custom plugin (richest):** this repo ships a native Stream Deck plugin under
+[`streamdeck/`](streamdeck/) that mirrors the entire Mac app as **39 ready-made
+actions**: every palette color as a pre-colored swatch key (drag "ARMY Purple"
+straight onto a key), every effect with a themed icon (rainbow gradient for
+Rainbow, icy blues for Ice, ember tones for Candle, …), brightness presets
+(10/25/50/75/100% with a fill gauge), and Off / Stop Effect / Reconnect. Four
+extra "Custom …" actions add a full color picker (any RGB), per-effect color
+pickers, and arbitrary percents. The manifest and icons are generated from the
+app's own palette/effects registries (`streamdeck/generate.py`), so the deck
+stays in sync with the app. **Install instructions, usage, and troubleshooting:
+[streamdeck/README.md](streamdeck/README.md)** — short version:
+
+```bash
+cp -R streamdeck/com.armylight.control.sdPlugin \
+  ~/Library/Application\ Support/com.elgato.StreamDeck/Plugins/
+killall "Stream Deck"; open -a "Elgato Stream Deck"
+```
+
+Then drag actions from the **ARMY Light** category onto keys. No build step, no
+dependencies — the plugin just calls the localhost remote above.
+
 From a terminal it's just `curl http://127.0.0.1:8722/color/red`.
 
 ## Run from source (developers)

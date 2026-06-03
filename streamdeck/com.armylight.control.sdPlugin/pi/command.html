@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="row"><label>Command</label>
+  <select id="command" onchange="saveForm()">
+    <option value="off">Off (lights out)</option>
+    <option value="stop">Stop effect</option>
+    <option value="reconnect">Reconnect</option>
+  </select>
+</div>
+<div class="hint">Off also cancels any running effect. Reconnect drops the
+link, rescans, and reconnects — use it if the wand was power-cycled.</div>
+
+<script src="pi.js"></script>
+<script>
+function loadForm(s) {
+  document.getElementById("command").value = s.command || "off";
+}
+function readForm() {
+  return { command: document.getElementById("command").value };
+}
+</script>
+</body>
+</html>
