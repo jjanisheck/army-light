@@ -4,16 +4,24 @@ from __future__ import annotations
 
 RGB = tuple[int, int, int]
 
-# Menu order, top to bottom. (label, (r, g, b))
+# Menu order, top to bottom. (label, (r, g, b)). "Off" renders as its own
+# menu section, not in the COLORS grid.
 PALETTE: list[tuple[str, RGB]] = [
     ("Red", (255, 0, 0)),
     ("Orange", (255, 80, 0)),
-    ("Yellow", (255, 200, 0)),
+    ("Amber", (255, 150, 0)),
+    ("Yellow", (255, 210, 0)),
+    ("Lime", (160, 255, 0)),
     ("Green", (0, 255, 0)),
+    ("Mint", (0, 255, 150)),
     ("Cyan", (0, 200, 255)),
+    ("Sky", (80, 140, 255)),
     ("Blue", (0, 0, 255)),
+    ("ARMY Purple", (130, 60, 255)),
     ("Purple", (160, 0, 255)),
+    ("Magenta", (255, 0, 255)),
     ("Pink", (255, 40, 150)),
+    ("Rose", (255, 120, 170)),
     ("White", (255, 255, 255)),
     ("Off", (0, 0, 0)),
 ]

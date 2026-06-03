@@ -1,8 +1,9 @@
 """Packet-format registry.
 
 The wand's encoding is pluggable so the `probe` tool can try several formats and
-the menu app can switch via config without code edits. `fanlight` is the verified
-ARMY Bomb / Fanlight-family format; the others are common generic formats kept as
+the menu app can switch via config without code edits. `bts_v4` is the format
+verified on a real BTS ARMY Bomb Ver. 4; `fanlight` is the verified format for the
+sibling Fanlight-platform sticks; the others are common generic formats kept as
 probe fallbacks in case a different firmware revision turns up.
 """
 
@@ -11,6 +12,24 @@ from __future__ import annotations
 from typing import Callable
 
 RGB = tuple[int, int, int]
+
+
+def bts_v4(r: int, g: int, b: int, transition: int = 0) -> bytes:
+    """BTS ARMY Bomb Ver. 4 ("BTS_V4 LS", Elcomtec/Telink).
+
+        RR GG BB TT — written to char 0001ff01-…-00805f9800c4; TT is a
+        transition/fade time in 10ms units (0 = instant). No header, no
+        checksum, no auth. Effects use TT for smooth breathing/cycling.
+
+    The color takes effect after a separate commit write (BTS_V4_COMMIT to the
+    commit char 0001ff13) — without it the wand keeps its pairing animation.
+    Verified on a real unit 2026-06-03; GATT map matches ryanDonsi/Light-Stick-SDK.
+    """
+    return bytes([r, g, b, transition & 0xFF])
+
+
+# Written to the V4 commit characteristic after a color write to apply it.
+BTS_V4_COMMIT = b"\x01"
 
 
 def fanlight(r: int, g: int, b: int) -> bytes:
@@ -44,6 +63,7 @@ def raw_rgb(r: int, g: int, b: int) -> bytes:
 
 # Ordered: the verified format first so `probe` tries the likely winner first.
 FORMATS: dict[str, Callable[[int, int, int], bytes]] = {
+    "bts_v4": bts_v4,
     "fanlight": fanlight,
     "triones": triones,
     "elk_bledom": elk_bledom,

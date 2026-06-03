@@ -14,18 +14,26 @@ def isolated_home(tmp_path, monkeypatch):
 
 
 def test_defaults_match_verified_protocol():
+    # Verified on a real BTS ARMY Bomb Ver. 4 ("BTS_V4 LS"), 2026-06-03.
     s = config.Settings()
-    assert s.service_uuid == "00010203-0405-0607-0809-0a0b0c0d1911"
-    assert s.color_char_uuid == "00010203-0405-0607-0809-0a0b0c0d2b19"
-    assert s.packet_format == "fanlight"
-    assert s.write_with_response is False
+    assert s.wand_name_match == "BTS"
+    assert s.service_uuid == "0001fe01-0000-1000-8000-00805f9800c4"
+    assert s.color_char_uuid == "0001ff01-0000-1000-8000-00805f9800c4"
+    assert s.commit_char_uuid == "0001ff13-0000-1000-8000-00805f9800c4"
+    assert s.packet_format == "bts_v4"
+    # ff01 is (read,write) — with-response ONLY. CoreBluetooth silently drops
+    # no-response writes to it (no error, no color change), so the default
+    # must be with-response. Verified both ways on a real V4 unit.
+    assert s.write_with_response is True
+    # V4 needs no white wake packet (it would flash white before every color).
+    assert s.wake_on_connect is False
 
 
 def test_load_creates_default_file(isolated_home):
     assert not config.config_path().exists()
     s = config.Settings.load()
     assert config.config_path().exists()
-    assert s.packet_format == "fanlight"
+    assert s.packet_format == "bts_v4"
 
 
 def test_save_load_round_trip():
@@ -48,7 +56,7 @@ def test_load_ignores_unknown_keys(isolated_home):
 def test_load_tolerates_corrupt_file(isolated_home):
     config.config_path().write_text("{ not json")
     s = config.Settings.load()  # falls back to defaults, doesn't raise
-    assert s.packet_format == "fanlight"
+    assert s.packet_format == "bts_v4"
 
 
 def test_logs_dir_under_home(isolated_home):

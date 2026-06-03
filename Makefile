@@ -2,6 +2,9 @@ VENV ?= .venv
 PY   := $(VENV)/bin/python
 PIP  := $(VENV)/bin/pip
 
+# Personal overrides (gitignored), e.g.: export ARMYLIGHT_BUNDLE_ID=com.you.armylight
+-include local.mk
+
 .PHONY: help dev run test lint format app clean
 
 help: ## Show available targets

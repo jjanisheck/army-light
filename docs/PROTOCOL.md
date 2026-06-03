@@ -43,43 +43,55 @@ the official app for link stability.
 
 ---
 
-## The protocol (verified — Fanlight family)
+## The protocol (verified — ARMY Bomb Ver. 4)
 
-The official BTS app (`bts.kr.co.fanlight.fanlightapp`) is built on the shared
-**Fanlight** platform used by many official K-pop lightsticks. The BLE color
-protocol below is confirmed from decompiled official source plus two independent
-working clients (one of them Python + `bleak` on macOS) — verified against sibling
-sticks (P1Harmony, LOONA/Loossemble). It is **not yet confirmed against a BTS unit
-specifically**, which is what `probe` is for. There is **no auth/handshake** for
-color control in Self Mode.
+Verified **on a real BTS ARMY Bomb Ver. 4** (advertised name `BTS_V4 LS`,
+manufacturer Elcomtec, Telink BLE SoC) on 2026-06-03, end-to-end from this app.
+The V4 is **not** on the Fanlight platform — its GATT is a custom Elcomtec layout,
+independently corroborated by
+[ryanDonsi/Light-Stick-SDK](https://github.com/ryanDonsi/Light-Stick-SDK)
+(the only public source matching this GATT). There is **no auth/handshake** for
+color control.
 
 | Field | Value |
 |---|---|
-| Service UUID | `00010203-0405-0607-0809-0a0b0c0d1911` (used to find the wand) |
-| Write / notify characteristic | `00010203-0405-0607-0809-0a0b0c0d2b19` |
-| Write type | write-**without**-response (retry with-response on failure) |
+| Advertised name | `BTS_V4 LS` — **no service UUIDs in the advertisement**, so the wand is resolved by name substring (`BTS`) |
+| LED control service | `0001fe01-0000-1000-8000-00805f9800c4` (custom base `…00805f9800c4`) |
+| Color characteristic | `0001ff01-0000-1000-8000-00805f9800c4` (read/write) |
+| Commit characteristic | `0001ff13-0000-1000-8000-00805f9800c4` (write-without-response) |
+| Write type | color: **with**-response (ff01 accepts nothing else — CoreBluetooth silently drops no-response writes to it); commit: without-response |
 
-**Color packet** (`fanlight` format, 11 bytes):
+**Color control** (`bts_v4` format, 4 bytes `RR GG BB TT`, TT = transition/fade
+in 10ms units, no header/checksum) — with one twist, established empirically:
 
-```
-01 01 0B 00 00 RR GG BB 00 00 CK
-                                ^ checksum = (sum of bytes[2..9]) & 0xFF
-                                           = (0x0B + R + G + B) & 0xFF
-```
+- A write of `01` to `ff13` makes the wand **apply the pending color and restart
+  its BLE session**: it leaves the power-on blinking-blue pairing animation AND
+  **drops the link ~1-2s later**. It is *not* a per-write commit.
+- So each fresh connection is **latched once**: `ff01 <- color`, `ff13 <- 01`,
+  accept the drop, reconnect. After that, plain `ff01` writes apply **instantly
+  over a persistent, stable link** (verified: 8 writes + 20s idle, no drop) —
+  no further `ff13`, which would just drop the link again.
+- Committing after every write (the obvious reading) reconnect-storms the wand —
+  60+ connect cycles can wedge its BLE stack until a power cycle.
 
-Examples: red `01 01 0b 00 00 ff 00 00 00 00 0a`, white
-`01 01 0b 00 00 ff ff ff 00 00 08`, off `01 01 0b 00 00 00 00 00 00 00 0b`.
-There's no brightness opcode — the app bakes brightness into RGB. Non-color query
-packets (`01 01 06 50 XX CK`) for battery/firmware/hardware live in `packets.py`.
+`ff13` is the one piece the Light-Stick-SDK doesn't document. Other V4 chars:
+`ff02` 20-byte effect payload per the SDK, but **guarded on this firmware**
+(no-response writes are ignored; with-response writes to `ff02`/`ff04` crash the
+link) — so effects are app-driven over `ff01`. `ff05` internal MAC, plus standard
+Device Information and Battery services.
 
-These are the defaults in `config.py` / `packets.py` — no longer guesses. The
-other registry formats (`triones`, `elk_bledom`, `raw_rgb`) remain only as `probe`
-fallbacks for unexpected firmware.
+These are the defaults in `config.py` / `packets.py`. The registry keeps
+`fanlight` (the protocol of sibling Fanlight-platform sticks — service
+`…0d1911`, char `…0d2b19`, packet `01 01 0B 00 00 RR GG BB 00 00 CK` with
+`CK = (0x0B+R+G+B) & 0xFF`) and the generic `triones` / `elk_bledom` / `raw_rgb`
+formats as `probe` fallbacks for other hardware.
 
-Sources: [TR0U8L3-gif/kpop-lightsticks](https://github.com/TR0U8L3-gif/kpop-lightsticks)
-(decompiled official app + dev vlog),
+Sources: this repo's `probe`/`inspect` session against a real V4 unit;
+[ryanDonsi/Light-Stick-SDK](https://github.com/ryanDonsi/Light-Stick-SDK) (GATT map,
+4-byte color packet);
+[TR0U8L3-gif/kpop-lightsticks](https://github.com/TR0U8L3-gif/kpop-lightsticks) and
 [gengkev/kpop-lightstick-experiments](https://github.com/gengkev/kpop-lightstick-experiments)
-(bleak/macOS + Web Bluetooth, confirmed working).
+(Fanlight family).
 
 ---
 
@@ -96,11 +108,9 @@ unpaired from the phone. (`army-light <cmd>` after `pip install -e .`, or
 army-light scan
 ```
 
-Look for the line flagged `<-- looks like the wand (Fanlight service)`, which
-matches the service UUID regardless of the advertised name (the BTS name isn't
-publicly documented). Note the address — on macOS it's a per-Mac CoreBluetooth
-UUID, not a hardware MAC, so we resolve by service UUID at runtime rather than
-caching it.
+A Ver. 4 shows up as `BTS_V4 LS` (it advertises no service UUIDs). Note the
+address — on macOS it's a per-Mac CoreBluetooth UUID, not a hardware MAC, so the
+app re-resolves by name/service at runtime rather than caching it.
 
 **2. Inspect** — list characteristics:
 
@@ -108,8 +118,9 @@ caching it.
 army-light inspect <address>
 ```
 
-Dumps every GATT service/characteristic and flags writable ones. You should see
-`…2b19` as `write-without-response,notify`.
+Dumps every GATT service/characteristic and flags writable ones. On a Ver. 4 you
+should see `0001ff01` (read/write) and `0001ff13` (write-without-response); on a
+Fanlight-family stick, `…2b19` as `write-without-response,notify`.
 
 **3. Probe** — confirm color control:
 
@@ -120,16 +131,19 @@ army-light probe <address> --color green
 
 It writes a candidate packet, then asks whether the wand changed. On a match it
 prints the exact values and a `set-config` command. To go straight at the
-known-good combo:
+known-good V4 combo:
 
 ```bash
-army-light probe <address> --char 00010203-0405-0607-0809-0a0b0c0d2b19 --format fanlight
+army-light probe <address> --char 0001ff01-0000-1000-8000-00805f9800c4 --format bts_v4
 ```
+
+(Note: on a V4 a bare `probe` color write may not show until a commit byte is
+written — the app does this automatically via `commit_char_uuid`.)
 
 **4. Save** verified values (only if `probe` found a different combo):
 
 ```bash
-army-light set-config --char <uuid> --format <name> --response <true|false>
+army-light set-config --char <uuid> --commit-char <uuid|''> --format <name> --response <true|false>
 ```
 
 **5. Monitor** — only if nothing works, to watch for an unexpected handshake:

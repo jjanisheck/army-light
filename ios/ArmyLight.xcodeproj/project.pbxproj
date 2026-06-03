@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
@@ -22,33 +22,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000003 /* ArmyLight */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
-			path = ArmyLight;
-			sourceTree = "<group>";
-		};
-		AA0000000000000000000004 /* ArmyLightTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
-			path = ArmyLightTests;
-			sourceTree = "<group>";
-		};
+		AA0000000000000000000003 /* ArmyLight */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ArmyLight; sourceTree = "<group>"; };
+		AA0000000000000000000004 /* ArmyLightTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ArmyLightTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AA000000000000000000000A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA000000000000000000000D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -83,13 +73,16 @@
 				AA000000000000000000000A /* Frameworks */,
 				AA000000000000000000000B /* Resources */,
 			);
-			buildRules = ();
-			dependencies = ();
+			buildRules = (
+			);
+			dependencies = (
+			);
 			fileSystemSynchronizedGroups = (
 				AA0000000000000000000003 /* ArmyLight */,
 			);
 			name = ArmyLight;
-			packageProductDependencies = ();
+			packageProductDependencies = (
+			);
 			productName = ArmyLight;
 			productReference = AA0000000000000000000005 /* ArmyLight.app */;
 			productType = "com.apple.product-type.application";
@@ -102,7 +95,8 @@
 				AA000000000000000000000D /* Frameworks */,
 				AA000000000000000000000E /* Resources */,
 			);
-			buildRules = ();
+			buildRules = (
+			);
 			dependencies = (
 				AA0000000000000000000019 /* PBXTargetDependency */,
 			);
@@ -110,7 +104,8 @@
 				AA0000000000000000000004 /* ArmyLightTests */,
 			);
 			name = ArmyLightTests;
-			packageProductDependencies = ();
+			packageProductDependencies = (
+			);
 			productName = ArmyLightTests;
 			productReference = AA0000000000000000000006 /* ArmyLightTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -144,7 +139,6 @@
 			);
 			mainGroup = AA0000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = AA0000000000000000000002 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -159,13 +153,15 @@
 		AA000000000000000000000B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA000000000000000000000E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -174,13 +170,15 @@
 		AA0000000000000000000009 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA000000000000000000000C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
@@ -322,6 +320,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F8G3UV3DQD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "ARMY Light";
@@ -336,7 +335,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.joeyjanisheck.armylight;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.armylight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
@@ -349,6 +348,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F8G3UV3DQD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "ARMY Light";
@@ -363,7 +363,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.joeyjanisheck.armylight;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.armylight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
@@ -377,7 +377,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.joeyjanisheck.armylight.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.armylight.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArmyLight.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArmyLight";
@@ -392,7 +392,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.joeyjanisheck.armylight.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.armylight.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArmyLight.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArmyLight";

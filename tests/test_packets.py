@@ -37,9 +37,31 @@ def test_build_unknown_format_raises():
         packets.build("nope", 1, 2, 3)
 
 
-def test_fanlight_is_the_default_registry_entry():
-    # First registry key is what `probe` tries first; keep the verified one first.
-    assert next(iter(packets.FORMATS)) == "fanlight"
+def test_bts_v4_exact_bytes():
+    # Verified on a real "BTS_V4 LS" unit (2026-06-03): 4 bytes RR GG BB TT,
+    # TT = transition/fade (0 = instant). No header, no checksum.
+    assert packets.build("bts_v4", 255, 0, 0).hex(" ") == "ff 00 00 00"
+    assert packets.build("bts_v4", 0, 255, 0).hex(" ") == "00 ff 00 00"
+    assert packets.build("bts_v4", 255, 255, 255).hex(" ") == "ff ff ff 00"
+    assert packets.build("bts_v4", 0, 0, 0).hex(" ") == "00 00 00 00"
+
+
+def test_bts_v4_is_the_default_registry_entry():
+    # First registry key is what `probe` tries first; keep the verified-on-BTS
+    # format first (fanlight stays for the sibling Fanlight-platform sticks).
+    assert next(iter(packets.FORMATS)) == "bts_v4"
+
+
+# The commit byte written to the V4 commit characteristic after a color write.
+def test_bts_v4_commit_byte():
+    assert packets.BTS_V4_COMMIT == b"\x01"
+
+
+def test_bts_v4_transition_byte():
+    # Byte 4 is a fade time in 10ms units; effects use it for smooth breathing.
+    assert packets.bts_v4(255, 0, 0, transition=120).hex(" ") == "ff 00 00 78"
+    # Registry path (3-arg) keeps transition at 0 — instant, as the menu expects.
+    assert packets.build("bts_v4", 255, 0, 0).hex(" ") == "ff 00 00 00"
 
 
 def test_query_packet_checksums():

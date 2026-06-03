@@ -14,6 +14,20 @@ dist/
 # Internal planning (not published)
 tasks/
 
-# claude-flow / ruflo plugin local state
+# Personal build settings (bundle id etc.)
+local.mk
+
+# macOS
+.DS_Store
+
+# Claude / ruflo tooling (local assistant state, not part of the project)
+CLAUDE.md
+.claude/
+.claude-flow/
+.ruflo/
+.swarm/
+.hive-mind/
+.mcp.json
+memory/
 agentdb.rvf
 agentdb.rvf.lock

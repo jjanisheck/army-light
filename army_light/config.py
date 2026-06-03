@@ -52,24 +52,29 @@ class Settings:
     """Everything the app needs to talk to the wand. Defaults are best guesses;
     the discovery tooling overwrites them with verified values."""
 
-    # How to find the wand. The Fanlight service UUID is the robust matcher on
-    # macOS (the BTS advertised name isn't publicly documented and may not
-    # contain "ARMY"). Address is machine-specific on macOS (a CoreBluetooth
+    # How to find the wand. The Ver. 4 wand advertises as "BTS_V4 LS" with NO
+    # service UUIDs in the advertisement, so the name substring is the working
+    # matcher (the service UUID is still tried first in case other firmware
+    # advertises it). Address is machine-specific on macOS (a CoreBluetooth
     # UUID, not a hardware MAC) so it isn't portable; resolve fresh each run.
     wand_address: str = ""
-    wand_name_match: str = "ARMY"
-    service_uuid: str = "00010203-0405-0607-0809-0a0b0c0d1911"
+    wand_name_match: str = "BTS"
+    service_uuid: str = "0001fe01-0000-1000-8000-00805f9800c4"
 
-    # The write target + encoding. Confirmed against Fanlight-family sticks
-    # (P1Harmony, LOONA) via decompiled official source + two working clients;
-    # confirm on a BTS unit with `probe` if a color click does nothing.
-    color_char_uuid: str = "00010203-0405-0607-0809-0a0b0c0d2b19"
-    packet_format: str = "fanlight"
-    write_with_response: bool = False  # app uses write-without-response
+    # The write target + encoding. Verified on a real BTS ARMY Bomb Ver. 4
+    # (2026-06-03): 4-byte RR GG BB TT color to ff01, then a commit byte to
+    # ff13 to apply it. Use `probe` if a color click does nothing.
+    color_char_uuid: str = "0001ff01-0000-1000-8000-00805f9800c4"
+    commit_char_uuid: str = "0001ff13-0000-1000-8000-00805f9800c4"  # "" = no commit step
+    packet_format: str = "bts_v4"
+    # ff01 is (read,write) — with-response ONLY: CoreBluetooth silently drops
+    # no-response writes to it (no error raised, wand just ignores them).
+    write_with_response: bool = True
 
-    # Mimic the official app: send a white "wake" packet right after connect and
-    # subscribe to notifications on the write char to keep the link stable.
-    wake_on_connect: bool = True
+    # Send a white "wake" packet right after connect (Fanlight-family behaviour;
+    # leave off for V4 — it would flash white before every color) and subscribe
+    # to notifications on the write char to keep the link stable.
+    wake_on_connect: bool = False
 
     # Behaviour.
     scan_timeout: float = 8.0

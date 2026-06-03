@@ -58,7 +58,7 @@ extension CBManagerState {
 /// onto it), so there is no concurrent access despite the type crossing into
 /// `@Sendable` timeout/continuation closures.
 final class BLEEngine: NSObject, @unchecked Sendable {
-    private let queue = DispatchQueue(label: "com.joeyjanisheck.armylight.ble")
+    private let queue = DispatchQueue(label: "com.example.armylight.ble")
     private var central: CBCentralManager!
 
     private var peripheral: CBPeripheral?

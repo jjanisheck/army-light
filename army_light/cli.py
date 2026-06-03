@@ -56,10 +56,13 @@ def _build_parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("set-config", help="persist verified protocol values")
     sp.add_argument("--char")
+    sp.add_argument("--commit-char", dest="commit_char",
+                    help="commit characteristic UUID ('' to disable the commit step)")
     sp.add_argument("--format", dest="fmt", choices=list(packets.FORMATS))
     sp.add_argument("--response", choices=["true", "false"])
     sp.add_argument("--address", help="cache the wand's address")
     sp.add_argument("--service", help="advertised service UUID to match on")
+    sp.add_argument("--name", help="advertised name substring to match on")
     return p
 
 
@@ -95,6 +98,8 @@ def main(argv: list[str] | None = None) -> int:
     elif args.cmd == "set-config":
         if args.char:
             settings.color_char_uuid = args.char
+        if args.commit_char is not None:
+            settings.commit_char_uuid = args.commit_char
         if args.fmt:
             settings.packet_format = args.fmt
         if args.response:
@@ -103,6 +108,8 @@ def main(argv: list[str] | None = None) -> int:
             settings.wand_address = args.address
         if args.service:
             settings.service_uuid = args.service
+        if args.name:
+            settings.wand_name_match = args.name
         settings.save()
         print(f"Saved config to {config.config_path()}")
     else:

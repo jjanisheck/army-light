@@ -81,7 +81,7 @@ mode — only one host can own the BLE link at a time.
 ## TestFlight / App Store
 
 1. Set your **Team** and a unique bundle ID under *Signing & Capabilities*
-   (default `com.joeyjanisheck.armylight`).
+   (default `com.example.armylight`).
 2. `Product ▸ Archive`, then distribute via the Organizer to App Store Connect.
 3. The Bluetooth usage string (`NSBluetoothAlwaysUsageDescription`) is generated
    into the Info.plist from build settings — App Review requires it, and it's

@@ -1,39 +1,31 @@
 # ARMY Light
 
-Set your BTS **ARMY Bomb** lightstick to any color from the macOS menu bar — no
-phone app required. Click a color, the wand changes color.
+Control a BTS **ARMY Bomb Ver. 4** lightstick from your Mac — colors, effects,
+and brightness from a menu-bar panel. No phone app required.
 
-```
- 💡  ARMY Light
- ┌──────────────┐
- │ Red          │
- │ Orange       │
- │ Yellow       │
- │ Green        │
- │ Cyan         │
- │ Blue         │
- │ Purple       │
- │ Pink         │
- │ White        │
- │ Off          │
- │ ───────────  │
- │ ● Connected  │
- │ ───────────  │
- │ Test (Red)   │
- │ Quit         │
- └──────────────┘
-```
+<p align="center">
+  <img src="armylight.png" alt="ARMY Light panel — color swatches, effects, brightness slider" width="320">
+</p>
+
+Click the 💡 in the menu bar and the panel stays open while you play:
+
+- **16 colors** (including ARMY Purple) — click a swatch, the wand follows
+- **10 effects** — Blink, Breath, Strobe, Duo Fade (gradient between your last
+  two colors), Color Cycle, Rainbow (classic ROYGBIV march), Candle, Party,
+  Jungle, and Ice
+- **Brightness slider** — live dimming of everything
+- **Reconnect button** — fresh scan + reconnect any time the wand wanders off
 
 ## Get the app
 
 **Option A — download (easiest).** Grab the latest `ARMY Light.app` from the
-[Releases page](https://github.com/USERNAME/army-light/releases), unzip it, and
+[Releases page](https://github.com/jjanisheck/army-light/releases), unzip it, and
 drag it to **Applications**. (Unsigned build: first launch → right-click → **Open**.)
 
 **Option B — build it yourself.**
 
 ```bash
-git clone https://github.com/USERNAME/army-light.git
+git clone https://github.com/jjanisheck/army-light.git
 cd army-light
 make dev          # create a venv + install
 make app          # build dist/ARMY Light.app
@@ -41,32 +33,45 @@ open "dist/ARMY Light.app"
 ```
 
 Drag `dist/ARMY Light.app` to **Applications** to keep it, and add it to **Login
-Items** to start at boot.
+Items** to start at boot. To brand a personal build, set your own bundle id:
+`export ARMYLIGHT_BUNDLE_ID=com.you.armylight` (or put that in a gitignored
+`local.mk`).
 
 ## Use it
 
-1. Set the wand's switch to **Bluetooth mode** and make sure it's **not connected
-   to the phone app** (only one device can control it at a time).
-2. Launch ARMY Light — a 💡 appears in the menu bar.
-3. Click a color. The first click connects (~1–3s); after that it's instant.
+1. Put the wand in **Bluetooth mode** (hold the handle button ~2s until it
+   blinks blue) and make sure it's **not connected to the phone app** — only one
+   device can control it at a time.
+2. Launch ARMY Light — a 💡 appears in the menu bar. Click it to open the panel.
+3. Click a color. The **first click takes ~5–8s** (scan + a one-time handshake
+   the wand requires per power-on); after that everything is instant over a
+   persistent connection.
 
-Bluetooth permission: macOS asks once on first use — allow it. If colors don't
-work, see the [install & troubleshooting guide](docs/INSTALL.md).
+Bluetooth permission: macOS asks once on first use — allow it. If the wand stops
+responding entirely, it has usually stopped advertising — press its button (or
+flip its switch) and hit **Reconnect**. More help: the
+[install & troubleshooting guide](docs/INSTALL.md).
 
 ## Requirements
 
-macOS with Bluetooth, and a BTS ARMY Bomb. Building from source needs Python 3.9+.
+macOS with Bluetooth, and a BTS ARMY Bomb **Ver. 4** ("BTS_V4 LS"). Building
+from source needs Python 3.9+.
 
 ## How it works
 
-A tiny menu-bar app (`rumps`) on the main thread, all Bluetooth (`bleak`) on a
-background thread. It speaks the **Fanlight** BLE protocol the official BTS app
-uses. Full details — architecture, the verified packet format, and the discovery
-CLI for confirming/extending support — are in **[docs/PROTOCOL.md](docs/PROTOCOL.md)**.
+A menu-bar overlay panel (AppKit via PyObjC) on the main thread, all Bluetooth
+(`bleak`) on a background asyncio thread. It speaks the ARMY Bomb Ver. 4 BLE
+protocol — a 4-byte color write with a hardware fade byte, plus a one-time
+session "latch" per connection — then streams colors over a persistent link.
+Effects are app-driven step generators (the wand's own animation engine is not
+reachable over BLE; we checked thoroughly). Full details — architecture, the
+verified packet format, the connection model, and the discovery CLI for
+confirming/extending support — are in **[docs/PROTOCOL.md](docs/PROTOCOL.md)**.
 
-> Status: the protocol is verified against sibling Fanlight sticks (P1Harmony,
-> LOONA). If a color doesn't take on your unit, the built-in `army-light probe`
-> tool finds the right values — see the protocol doc.
+> Status: **verified end-to-end on a real ARMY Bomb Ver. 4** (`BTS_V4 LS`,
+> Elcomtec). The Fanlight-family format used by sibling lightsticks ships as a
+> fallback. If a color doesn't take on your unit, the built-in `army-light
+> probe` tool finds the right values — see the protocol doc.
 
 ## Run from source (developers)
 
@@ -79,6 +84,8 @@ make lint         # ruff
 
 The `army-light` command (after `pip install -e .`) exposes the discovery CLI:
 `scan`, `inspect`, `probe`, `monitor`. See [docs/PROTOCOL.md](docs/PROTOCOL.md).
+An experimental native iOS app lives under [`ios/`](ios/README.md) (still on the
+older Fanlight protocol — V4 port pending).
 
 ## License
 
