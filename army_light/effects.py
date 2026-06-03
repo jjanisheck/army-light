@@ -98,6 +98,16 @@ def rainbow() -> Iterator[Step]:
             yield (rgb, 80, 2.0)
 
 
+def glow_cycle(steps: int = 12) -> Iterator[Step]:
+    """Breathe brightness through the hue wheel: swell up bright in a color,
+    dim low in the SAME color (1.3s hardware fades each way), then advance to
+    the next hue while dim so the color change is hidden in the dark."""
+    while True:
+        for i in range(steps):
+            yield (_hsv(i / steps, 1.0, 1.0), 130, 1.4)   # swell up
+            yield (_hsv(i / steps, 1.0, 0.10), 130, 1.4)  # dim down, same hue
+
+
 # Theme palettes (whole-globe — the V4 exposes no per-zone control over BLE).
 JUNGLE_COLORS: list[RGB] = [
     (10, 120, 25),    # deep canopy
@@ -167,6 +177,7 @@ EFFECTS: dict[str, Effect] = {
     "Duo Fade": Effect(duo_fade, arity=2),
     "Color Cycle": Effect(cycle, arity=0),
     "Rainbow": Effect(rainbow, arity=0),
+    "Glow Cycle": Effect(glow_cycle, arity=0),
     "Candle": Effect(candle, arity=0),
     "Party": Effect(party, arity=0),
     "Jungle": Effect(jungle, arity=0),

@@ -120,11 +120,32 @@ def test_rainbow_marches_roygbiv_in_order():
         assert delay >= transition / 100.0        # fade completes before next
 
 
+def test_glow_cycle_breathes_brightness_through_the_hues():
+    steps = take(effects.glow_cycle(), 24)  # 12 hues x (bright, dim)
+    brights, dims = steps[0::2], steps[1::2]
+    for (rgb_b, t_b, d_b), (rgb_d, t_d, d_d) in zip(brights, dims):
+        assert max(rgb_b) >= 200            # swells up bright
+        assert 0 < max(rgb_d) <= 40         # dims low but never fully off
+        assert t_b > 0 and t_d > 0          # both ramps are smooth fades
+        assert d_b >= t_b / 100.0 and d_d >= t_d / 100.0
+    # The hue actually advances between swells (it cycles, not pulses).
+    assert len({rgb for rgb, _, _ in brights}) == len(brights)
+
+
+def test_glow_cycle_changes_hue_at_the_dim_point():
+    steps = take(effects.glow_cycle(), 4)
+    (b1, _, _), (d1, _, _), (b2, _, _), _ = steps
+    # dim step keeps the current hue (scaled), so the color switch is hidden
+    scale = max(d1) / max(b1)
+    assert all(abs(d - b * scale) <= 2 for d, b in zip(d1, b1))
+    assert b2 != b1
+
+
 def test_registry_labels_and_arity():
     # The menu builds itself from this registry. arity = colors the effect takes.
     expected = {"Blink": 1, "Breath": 1, "Strobe": 1, "Duo Fade": 2,
-                "Color Cycle": 0, "Rainbow": 0, "Candle": 0, "Party": 0,
-                "Jungle": 0, "Ice": 0}
+                "Color Cycle": 0, "Rainbow": 0, "Glow Cycle": 0,
+                "Candle": 0, "Party": 0, "Jungle": 0, "Ice": 0}
     assert {label: e.arity for label, e in effects.EFFECTS.items()} == expected
 
 
