@@ -29,6 +29,11 @@ final class WandController {
     private(set) var state: ConnState = .idle
     private(set) var lastError: String?
     private(set) var lastRGB: RGB?
+    private(set) var currentEffect: String?
+    /// Software brightness scaling (the wand has no brightness register).
+    private(set) var brightness: Double = 1.0
+
+    private var effectTask: Task<Void, Never>?
 
     var isConnected: Bool { state == .connected }
 
@@ -57,10 +62,53 @@ final class WandController {
         }
     }
 
-    /// Schedule a color write. Serialized; reconnects as needed. Never throws to
-    /// the caller — failures land in `lastError` / `state` for the UI to read.
+    /// Schedule a color write. Serialized; reconnects as needed; cancels any
+    /// running effect. Never throws to the caller — failures land in
+    /// `lastError` / `state` for the UI to read.
     func setColor(_ rgb: RGB) {
+        stopEffect()
         Task { await self.performSetColor(rgb) }
+    }
+
+    /// Start an app-driven effect (see Effects.swift). `colors` must match the
+    /// effect's arity. Replaces any running effect.
+    func startEffect(_ label: String, colors: [RGB] = []) {
+        guard let effect = Effects.named(label), colors.count >= effect.arity else { return }
+        stopEffect()
+        currentEffect = label
+        let steps = effect.make(Array(colors.prefix(effect.arity)))
+        effectTask = Task { [weak self] in
+            while !Task.isCancelled, let step = steps.next() {
+                await self?.applyStep(step)
+                if Task.isCancelled { break }
+                try? await Task.sleep(nanoseconds: UInt64(step.delay * 1_000_000_000))
+            }
+        }
+    }
+
+    /// Stop the running effect, leaving the wand on its current color.
+    func stopEffect() {
+        effectTask?.cancel()
+        effectTask = nil
+        currentEffect = nil
+    }
+
+    /// Set brightness (0.05...1). Re-applies the current solid color when
+    /// `apply` is true; a running effect picks it up on its next step.
+    func setBrightness(_ value: Double, apply: Bool = true) {
+        brightness = min(1.0, max(0.05, value))
+        if apply, effectTask == nil, let rgb = lastRGB {
+            Task { await self.performSetColor(rgb) }
+        }
+    }
+
+    /// Drop the link and reconnect from a fresh scan (re-applying the last color
+    /// so the latch has something sensible to show).
+    func reconnect() {
+        stopEffect()
+        engine.disconnect()
+        state = .idle
+        Task { await self.performSetColor(self.lastRGB ?? .white) }
     }
 
     private func performSetColor(_ rgb: RGB) async {
@@ -69,6 +117,24 @@ final class WandController {
                 try await self.ensureConnected(latchColor: rgb)
                 try await self.writeColor(rgb)
                 self.lastRGB = rgb
+                self.lastError = nil
+                self.state = .connected
+            } catch {
+                self.lastError = error.localizedDescription
+                self.state = .error
+                self.engine.disconnect()
+            }
+        }
+    }
+
+    /// One effect frame: connect/latch if needed, write the step's color with
+    /// its hardware fade. Failures drop the link; the next step reconnects.
+    private func applyStep(_ step: EffectStep) async {
+        await gate.run {
+            do {
+                try await self.ensureConnected(latchColor: step.rgb)
+                try await self.writeColor(step.rgb, transition: step.transition)
+                self.lastRGB = step.rgb
                 self.lastError = nil
                 self.state = .connected
             } catch {
@@ -88,7 +154,7 @@ final class WandController {
         try await connectOnce()
 
         if !settings.commitCharUUID.isEmpty {
-            try? await writeRaw(settings.packetFormat.build(latchColor))
+            try? await writeRaw(settings.packetFormat.build(scaled(latchColor)))
             engine.writeCommit(Packets.btsV4Commit)
             try? await Task.sleep(nanoseconds: 1_200_000_000)  // session restart
             engine.disconnect()
@@ -117,7 +183,15 @@ final class WandController {
     }
 
     private func writeColor(_ rgb: RGB, transition: UInt8 = 0) async throws {
-        try await writeRaw(settings.packetFormat.build(rgb, transition: transition))
+        try await writeRaw(settings.packetFormat.build(scaled(rgb), transition: transition))
+    }
+
+    /// Apply software brightness — every write carries the scaled color, while
+    /// `lastRGB` keeps the logical color for the UI.
+    private func scaled(_ rgb: RGB) -> RGB {
+        RGB(Int((Double(rgb.r) * brightness).rounded()),
+            Int((Double(rgb.g) * brightness).rounded()),
+            Int((Double(rgb.b) * brightness).rounded()))
     }
 
     /// Write with the configured response mode; retry with the other mode once,

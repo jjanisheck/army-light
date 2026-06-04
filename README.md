@@ -161,8 +161,8 @@ make lint         # ruff
 
 The `army-light` command (after `pip install -e .`) exposes the discovery CLI:
 `scan`, `inspect`, `probe`, `monitor`. See [docs/PROTOCOL.md](docs/PROTOCOL.md).
-An experimental native iOS app lives under [`ios/`](ios/README.md), speaking the
-same verified V4 protocol.
+A native iOS app lives under [`ios/`](ios/README.md) — same design, same
+effects, same verified V4 protocol.
 
 ## License
 

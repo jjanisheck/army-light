@@ -17,8 +17,35 @@ struct PaletteColor: Identifiable, Hashable {
     var id: String { label }
 }
 
+/// A band member's signature color (top row of the grid).
+struct Member: Identifiable, Hashable {
+    let name: String
+    let rgb: RGB
+    let text: RGB   // initials color on the swatch
+    var id: String { name }
+}
+
 enum Palette {
-    /// Grid order, top to bottom / left to right.
+    /// Top row: the seven members in their signature colors (design handoff).
+    static let members: [Member] = [
+        Member(name: "RM", rgb: RGB(43, 127, 255), text: .white),
+        Member(name: "JIN", rgb: RGB(255, 143, 200), text: RGB(58, 16, 32)),
+        Member(name: "SUGA", rgb: RGB(27, 27, 32), text: .white),
+        Member(name: "J-HOPE", rgb: RGB(255, 59, 59), text: .white),
+        Member(name: "JIMIN", rgb: RGB(255, 200, 61), text: RGB(58, 44, 0)),
+        Member(name: "V", rgb: RGB(54, 200, 113), text: RGB(6, 33, 15)),
+        Member(name: "JK", rgb: RGB(154, 108, 255), text: .white),
+    ]
+
+    /// Two rows of general colors below the member row (full ROYGBIV spread).
+    static let extras: [RGB] = [
+        RGB(255, 77, 77), RGB(255, 122, 26), RGB(255, 176, 32), RGB(255, 227, 77),
+        RGB(182, 240, 60), RGB(63, 214, 107), RGB(45, 224, 192),
+        RGB(51, 199, 255), RGB(59, 130, 246), RGB(108, 92, 231), RGB(168, 85, 247),
+        RGB(233, 79, 208), RGB(255, 111, 165), RGB(255, 255, 255),
+    ]
+
+    /// Grid order, top to bottom / left to right (legacy list — rules, parsing).
     static let all: [PaletteColor] = [
         PaletteColor(label: "Red",    rgb: RGB(255, 0, 0)),
         PaletteColor(label: "Orange", rgb: RGB(255, 80, 0)),

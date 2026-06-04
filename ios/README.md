@@ -1,12 +1,21 @@
 # ARMY Light for iOS
 
-A native SwiftUI iPhone/iPad app that drives a BTS ARMY Bomb lightstick to
-arbitrary RGB colors over Bluetooth LE — the iOS sibling of the macOS menu-bar
-app in the repo root. Tap a color, the wand changes. Set up foreground "rules"
-that flash an alert color and return to a resting/idle color after a hold.
+A native SwiftUI iPhone/iPad app that drives a BTS ARMY Bomb **Ver. 4** over
+Bluetooth LE — the iOS sibling of the macOS panel app in the repo root, with
+the same design and feature set:
 
-The BLE protocol is a faithful, **byte-identical** port of the Python package
-(`army_light/`), which remains the protocol source-of-truth.
+- **Glowing hero wand** preview mirroring the live color/brightness/effect
+- **3×7 color grid** — the seven members in their signature colors with
+  initials (RM/JIN/SUGA/J-HOPE/JIMIN/V/JK) plus 14 spectrum colors, sent
+  LED-true (fully saturated hues, no washed-out whites)
+- **11 app-driven effects** in Ambient / High-energy groups — Blink, Breath,
+  Strobe, Duo Fade, Color Cycle, Rainbow, Glow Cycle, Candle, Party, Jungle,
+  Ice — tap an active effect (or Stop) to clear it
+- **Brightness slider** (software RGB scaling) and a custom color picker
+- Foreground **rules** that flash an alert color and return to idle
+
+The BLE protocol and effects engine are faithful, **byte-identical** ports of
+the Python package (`army_light/`), which remains the source-of-truth.
 
 ## Requirements
 
