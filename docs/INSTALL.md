@@ -77,7 +77,7 @@ Config and logs live under `~/Library/Application Support/ArmyLight/` and
 
 | Symptom | Fix |
 |---|---|
-| Nothing in the menu bar | The icon is a small 💡/🔅 near the clock. Quit other instances; relaunch. |
+| Nothing in the menu bar | The icon is a small purple heart (♥ on / ♡ off) near the clock. Quit other instances; relaunch. |
 | `scan` / app finds no wand | Grant Bluetooth (above). Confirm the wand is on, switch in **Bluetooth mode**, and disconnected from the phone app. |
 | Wand never appears | It only advertises when on and not already connected. Disconnect from the phone, power-cycle, try again. |
 | Connects but color does nothing | Confirm the protocol with `army-light probe <addr>` (see [PROTOCOL.md](PROTOCOL.md)), then `army-light set-config …`. Check `~/Library/Logs/ArmyLight/army_light.log`. |

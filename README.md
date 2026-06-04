@@ -57,7 +57,8 @@ Items** to start at boot. To brand a personal build, set your own bundle id:
 1. Put the wand in **Bluetooth mode** (hold the handle button ~2s until it
    blinks blue) and make sure it's **not connected to the phone app** — only one
    device can control it at a time.
-2. Launch ARMY Light — a 💡 appears in the menu bar. Click it to open the panel.
+2. Launch ARMY Light — a purple heart appears in the menu bar (♡ outline when
+   the light is off, ♥ solid when it's on). Click it to open the panel.
 3. Click a color. The **first click takes ~5–8s** (scan + a one-time handshake
    the wand requires per power-on); after that everything is instant over a
    persistent connection.
