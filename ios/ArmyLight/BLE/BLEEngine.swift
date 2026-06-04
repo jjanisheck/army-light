@@ -63,10 +63,13 @@ final class BLEEngine: NSObject, @unchecked Sendable {
 
     private var peripheral: CBPeripheral?
     private var writeChar: CBCharacteristic?
+    private var commitChar: CBCharacteristic?
 
     private var scanResult: CBPeripheral?     // handed back out of the scan slot
     private var nameMatch = ""
+    private var targetService: CBUUID?
     private var wantedChar: CBUUID?
+    private var wantedCommitChar: CBUUID?
 
     /// One pending operation per slot; all continuations are `Void`-typed and
     /// resumed only via `resume(_:throwing:)` on `queue`.
@@ -136,16 +139,19 @@ final class BLEEngine: NSObject, @unchecked Sendable {
         }
     }
 
-    /// Scan for a peripheral advertising `serviceUUID` (name substring as a
-    /// fallback filter), connect, and discover the write characteristic.
+    /// Scan for the wand and connect. The V4 advertises NO service UUIDs, so
+    /// the scan is unfiltered and a peripheral matches by advertised-name
+    /// substring (or by advertising `serviceUUID`, for firmwares that do).
     func connect(
         serviceUUID: CBUUID,
         nameMatch: String,
         charUUID: CBUUID,
+        commitCharUUID: CBUUID?,
         scanTimeout: TimeInterval,
         connectTimeout: TimeInterval
     ) async throws {
-        // Reuse a peripheral the system already holds for this service, if any.
+        // Reuse a peripheral the system already holds for this service, if any
+        // (works for V4: the service is in GATT even though it isn't advertised).
         let preconnected = queue.sync {
             central.retrieveConnectedPeripherals(withServices: [serviceUUID]).first
         }
@@ -156,7 +162,8 @@ final class BLEEngine: NSObject, @unchecked Sendable {
             try await perform(.scan, timeout: scanTimeout, label: "scan") {
                 self.scanResult = nil
                 self.nameMatch = nameMatch.lowercased()
-                self.central.scanForPeripherals(withServices: [serviceUUID], options: nil)
+                self.targetService = serviceUUID
+                self.central.scanForPeripherals(withServices: nil, options: nil)
             }
             guard let found = queue.sync(execute: { scanResult }) else { throw WandError.wandNotFound }
             target = found
@@ -174,10 +181,11 @@ final class BLEEngine: NSObject, @unchecked Sendable {
 
         try await perform(.chars, timeout: 10, label: "discover characteristics") {
             self.wantedChar = charUUID
+            self.wantedCommitChar = commitCharUUID
             guard let p = self.peripheral, let services = p.services, !services.isEmpty else {
                 self.resume(.chars, throwing: WandError.characteristicMissing); return
             }
-            for s in services { p.discoverCharacteristics([charUUID], for: s) }
+            for s in services { p.discoverCharacteristics(nil, for: s) }
         }
 
         if queue.sync(execute: { writeChar }) == nil { throw WandError.characteristicMissing }
@@ -225,11 +233,21 @@ final class BLEEngine: NSObject, @unchecked Sendable {
         }
     }
 
+    /// Write the V4 latch byte to the commit characteristic (fire-and-forget,
+    /// write-without-response — the wand drops the link shortly after anyway).
+    func writeCommit(_ data: Data) {
+        queue.async {
+            guard let p = self.peripheral, let c = self.commitChar else { return }
+            p.writeValue(data, for: c, type: .withoutResponse)
+        }
+    }
+
     func disconnect() {
         queue.async {
             if let p = self.peripheral { self.central.cancelPeripheralConnection(p) }
             self.peripheral = nil
             self.writeChar = nil
+            self.commitChar = nil
         }
     }
 }
@@ -248,11 +266,15 @@ extension BLEEngine: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
                         advertisementData: [String: Any], rssi RSSI: NSNumber) {
-        // The service-UUID scan already filtered; honor the name substring only
-        // when a name is actually advertised.
+        // Unfiltered scan (the V4 advertises no service UUIDs): a peripheral
+        // must positively match by name substring, or by advertising the
+        // target service (other firmwares).
         let name = (peripheral.name
             ?? advertisementData[CBAdvertisementDataLocalNameKey] as? String ?? "").lowercased()
-        if !nameMatch.isEmpty, !name.isEmpty, !name.contains(nameMatch) { return }
+        let nameOK = !nameMatch.isEmpty && name.contains(nameMatch)
+        let advServices = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] ?? []
+        let serviceOK = targetService.map(advServices.contains) ?? false
+        guard nameOK || serviceOK else { return }
         central.stopScan()
         scanResult = peripheral
         resume(.scan)
@@ -270,6 +292,7 @@ extension BLEEngine: CBCentralManagerDelegate {
         if peripheral == self.peripheral {
             self.peripheral = nil
             self.writeChar = nil
+            self.commitChar = nil
         }
     }
 }
@@ -283,13 +306,23 @@ extension BLEEngine: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        if writeChar == nil,
-           let match = service.characteristics?.first(where: {
-               ($0.uuid == wantedChar) || $0.properties.contains(.write) || $0.properties.contains(.writeWithoutResponse)
-           }) {
-            writeChar = match
+        for char in service.characteristics ?? [] {
+            if char.uuid == wantedChar { writeChar = char }
+            if let wanted = wantedCommitChar, char.uuid == wanted { commitChar = char }
         }
-        resume(.chars)
+        // Resolve once the color char (and the commit char, if expected) are in
+        // hand, or once every service has reported back.
+        let allReported = peripheral.services?.allSatisfy { $0.characteristics != nil } ?? true
+        let haveAll = writeChar != nil && (wantedCommitChar == nil || commitChar != nil)
+        if haveAll || allReported {
+            // Fall back to any writable char if the exact UUID never appeared.
+            if writeChar == nil {
+                writeChar = peripheral.services?
+                    .compactMap { $0.characteristics }.joined()
+                    .first { $0.properties.contains(.write) || $0.properties.contains(.writeWithoutResponse) }
+            }
+            resume(.chars)
+        }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {

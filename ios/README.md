@@ -58,22 +58,29 @@ ios/
   parked `Void` continuation (with a per-op timeout work item), so every async
   call resolves exactly once.
 - **`WandController`** (`@MainActor @Observable`) — the policy layer, mirroring
-  the Python `controller.py`: no persistent connection (the wand
-  idle-disconnects), so each color write resolves → connects → optionally sends a
-  white "wake" packet → writes, dropping the link on failure so the next call
-  reconnects. Writes are serialized. UI reads `state` / `lastError` / `lastRGB`.
+  the Python `controller.py`: each fresh connection is **latched once** (write
+  the requested color + the ff13 session-restart byte, let the wand drop the
+  link, reconnect), then plain color writes stream over a persistent link.
+  Failures drop the client so the next call reconnects and re-latches. Writes
+  are serialized. UI reads `state` / `lastError` / `lastRGB`.
 - **`RulesEngine`** (`@MainActor @Observable`) — holds the rule list (persisted as
   JSON in UserDefaults) and the idle/alert-hold behavior. **Foreground only** —
   iOS gives no reliable background BLE guarantees, so rules evaluate while the app
   is open (tap *Simulate* to fire one).
 
-## Verified protocol (from the repo root `CLAUDE.md` / `docs/PROTOCOL.md`)
+## Verified protocol — ARMY Bomb Ver. 4 (see `docs/PROTOCOL.md`)
 
-- Service UUID `00010203-0405-0607-0809-0a0b0c0d1911` (used to resolve the wand)
-- Write/notify char `00010203-0405-0607-0809-0a0b0c0d2b19`
-- `fanlight` color packet: `01 01 0B 00 00 RR GG BB 00 00 CK`,
-  `CK = (0x0B + R + G + B) & 0xFF`
-- Write-without-response (retry with-response on failure); no auth for color
+- Advertised name `BTS_V4 LS`, **no service UUIDs in the advertisement** — the
+  scan is unfiltered and matches by name substring (`BTS`); LED service
+  `0001fe01-0000-1000-8000-00805f9800c4` (helps retrieve connected peripherals)
+- Color char `0001ff01-…-00805f9800c4`: `bts_v4` packet = 4 bytes
+  `RR GG BB TT` (TT = fade in 10ms units), write **with**-response only
+- Latch char `0001ff13-…-00805f9800c4`: `01` once per fresh connection — the
+  wand applies the color, exits its pairing animation, and restarts its BLE
+  session (drops the link); never write it per color
+- No auth. `fanlight` (`…0d1911`/`…0d2b19`, checksummed 11-byte packet) and the
+  generic formats remain as fallbacks; stored pre-V4 settings migrate forward
+  automatically (`AppSettings.protocolVersion`)
 
 The wand must be **unpaired from the phone app** and its switch set to Bluetooth
 mode — only one host can own the BLE link at a time.

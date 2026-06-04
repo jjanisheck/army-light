@@ -48,6 +48,10 @@ Items** to start at boot. To brand a personal build, set your own bundle id:
 `export ARMYLIGHT_BUNDLE_ID=com.you.armylight` (or put that in a gitignored
 `local.mk`).
 
+<p align="center">
+  <img src="comeonwing.gif" alt="Glowing wand" width="220">
+</p>
+
 ## Use it
 
 1. Put the wand in **Bluetooth mode** (hold the handle button ~2s until it
@@ -62,6 +66,22 @@ Bluetooth permission: macOS asks once on first use — allow it. If the wand sto
 responding entirely, it has usually stopped advertising — press its button (or
 flip its switch) and hit **Reconnect**. More help: the
 [install & troubleshooting guide](docs/INSTALL.md).
+
+### Run it plugged in (no batteries)
+
+The wand runs on 3× AAA (~5 hours) — fine for concerts, not for a permanent desk
+light. A **AAA battery eliminator** (~$15.49,
+[this one on Amazon](https://www.amazon.com/dp/B0874HWL2L)) swaps the batteries
+for dummy cells wired to a wall adapter, so the wand stays on forever:
+
+<p align="center">
+  <img src="powersupply.jpg" alt="AAA battery power supply adapter — dummy cells wired to a wall plug" width="420">
+</p>
+
+Drop the dummy cells into the battery compartment and, with a little careful
+winding, route the flat cable so it comes out at the bottom of the handle — the
+cap still closes over it. (You *could* Dremel/drill a hole for the wire, but you
+don't have to.)
 
 ## Requirements
 
@@ -140,8 +160,8 @@ make lint         # ruff
 
 The `army-light` command (after `pip install -e .`) exposes the discovery CLI:
 `scan`, `inspect`, `probe`, `monitor`. See [docs/PROTOCOL.md](docs/PROTOCOL.md).
-An experimental native iOS app lives under [`ios/`](ios/README.md) (still on the
-older Fanlight protocol — V4 port pending).
+An experimental native iOS app lives under [`ios/`](ios/README.md), speaking the
+same verified V4 protocol.
 
 ## License
 

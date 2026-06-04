@@ -4,8 +4,9 @@
 //
 //  Packet-format registry — a Swift port of the Python `army_light/packets.py`,
 //  which remains the protocol source-of-truth. The wand's encoding is pluggable
-//  so we can switch formats via Settings without code edits. `fanlight` is the
-//  verified ARMY Bomb / Fanlight-family format; the others are generic fallbacks.
+//  so we can switch formats via Settings without code edits. `btsV4` is the
+//  format verified on a real BTS ARMY Bomb Ver. 4; `fanlight` covers the sibling
+//  Fanlight-family sticks; the others are generic fallbacks.
 //
 
 import Foundation
@@ -31,15 +32,23 @@ struct RGB: Equatable, Hashable, Codable {
 }
 
 enum PacketFormat: String, CaseIterable, Codable {
+    case btsV4 = "bts_v4"
     case fanlight
     case triones
     case elkBledom = "elk_bledom"
     case rawRGB = "raw_rgb"
 
-    /// Build the on-wire color packet for this format.
-    func build(_ rgb: RGB) -> Data {
+    /// Build the on-wire color packet for this format. `transition` is the
+    /// V4 fade time in 10ms units (0 = instant); other formats ignore it.
+    func build(_ rgb: RGB, transition: UInt8 = 0) -> Data {
         let r = Int(rgb.r), g = Int(rgb.g), b = Int(rgb.b)
         switch self {
+        case .btsV4:
+            // BTS ARMY Bomb Ver. 4 ("BTS_V4 LS", Elcomtec/Telink), verified on a
+            // real unit 2026-06-03: RR GG BB TT to char 0001ff01, no header, no
+            // checksum, no auth. The color applies live over a latched session
+            // (see WandController for the ff13 latch-once connection model).
+            return Data([rgb.r, rgb.g, rgb.b, transition])
         case .fanlight:
             // BTS ARMY Bomb / Fanlight family:
             //   01 01 0B 00 00 RR GG BB 00 00 CK
@@ -58,6 +67,13 @@ enum PacketFormat: String, CaseIterable, Codable {
             return Data([rgb.r, rgb.g, rgb.b])
         }
     }
+}
+
+enum Packets {
+    /// Written to the V4 commit/latch characteristic (0001ff13). The wand
+    /// applies the pending color, exits its pairing animation, and restarts its
+    /// BLE session (drops the link ~1-2s later) — latch ONCE per connection.
+    static let btsV4Commit = Data([0x01])
 }
 
 /// Non-color Fanlight query packets (01 01 06 50 XX CK, CK = byte2+byte3+byte4).

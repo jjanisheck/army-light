@@ -44,8 +44,30 @@ final class PacketsTests: XCTestCase {
     }
 
     func testFormatRawValuesMatchPython() {
+        XCTAssertEqual(PacketFormat.btsV4.rawValue, "bts_v4")
         XCTAssertEqual(PacketFormat.fanlight.rawValue, "fanlight")
         XCTAssertEqual(PacketFormat.elkBledom.rawValue, "elk_bledom")
         XCTAssertEqual(PacketFormat.rawRGB.rawValue, "raw_rgb")
+    }
+
+    // MARK: - BTS Ver. 4 (verified on a real BTS_V4 LS unit, 2026-06-03)
+
+    func testBtsV4ExactBytes() {
+        // 4 bytes RR GG BB TT — no header, no checksum. TT = fade (10ms units).
+        XCTAssertEqual(hex(PacketFormat.btsV4.build(RGB(255, 0, 0))), "ff 00 00 00")
+        XCTAssertEqual(hex(PacketFormat.btsV4.build(RGB(0, 255, 0))), "00 ff 00 00")
+        XCTAssertEqual(hex(PacketFormat.btsV4.build(.white)), "ff ff ff 00")
+        XCTAssertEqual(hex(PacketFormat.btsV4.build(.off)), "00 00 00 00")
+    }
+
+    func testBtsV4TransitionByte() {
+        XCTAssertEqual(hex(PacketFormat.btsV4.build(RGB(255, 0, 0), transition: 120)), "ff 00 00 78")
+        // Other formats ignore the transition parameter.
+        XCTAssertEqual(hex(PacketFormat.fanlight.build(RGB(255, 0, 0), transition: 120)),
+                       "01 01 0b 00 00 ff 00 00 00 00 0a")
+    }
+
+    func testBtsV4CommitByte() {
+        XCTAssertEqual(hex(Packets.btsV4Commit), "01")
     }
 }
