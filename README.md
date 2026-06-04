@@ -4,17 +4,28 @@ Control a BTS **ARMY Bomb Ver. 4** lightstick from your Mac — colors, effects,
 and brightness from a menu-bar panel. No phone app required.
 
 <p align="center">
-  <img src="armylight.png" alt="ARMY Light panel — color swatches, effects, brightness slider" width="320">
+  <img src="armylight.webp" alt="ARMY Light panel — member colors, swatch grid, effects, brightness slider" width="340">
 </p>
 
-Click the 💡 in the menu bar and the panel stays open while you play:
+Click the 💜 in the menu bar (solid when the light is on, outline when off) and
+the panel stays open while you play:
 
-- **16 colors** (including ARMY Purple) — click a swatch, the wand follows
-- **10 effects** — Blink, Breath, Strobe, Duo Fade (gradient between your last
-  two colors), Color Cycle, Rainbow (classic ROYGBIV march), Candle, Party,
-  Jungle, and Ice
+- **Glowing hero wand** that mirrors the real wand live — color, brightness, state
+- **Member row** — RM, JIN, SUGA, J-HOPE, JIMIN, V, JK in their signature
+  colors, plus **14 spectrum colors** below (colors are LED-true on the wand:
+  fully saturated hues, no washed-out whites)
+- **11 effects** in Ambient / High-energy groups — Blink, Breath, Strobe,
+  Duo Fade (gradient between your last two colors), Color Cycle, Rainbow
+  (classic ROYGBIV march), Glow Cycle (brightness breathing through the hues),
+  Candle, Party, Jungle, and Ice
 - **Brightness slider** — live dimming of everything
 - **Reconnect button** — fresh scan + reconnect any time the wand wanders off
+
+See it in action:
+
+<p align="center">
+  <img src="armylight.gif" alt="ARMY Light demo — clicking colors and effects drives the wand" width="340">
+</p>
 
 ## Get the app
 
